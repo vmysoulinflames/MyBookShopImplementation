@@ -42,6 +42,8 @@ class LikeBookUser(models.Model):
 
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="liked_book_table")
     book: Book = models.ForeignKey(Book, on_delete=models.CASCADE, related_name="liked_user_table")
+    # tmp_book: TMPBook = models.ForeignKey(
+    #     TMPBook, on_delete=models.CASCADE, related_name='liked_user_table', null=True)
     rate = models.PositiveIntegerField(default=5)
 
     def save(self, **kwargs):
@@ -63,6 +65,8 @@ class Comment(models.Model):
     text = models.TextField()
     date = models.DateTimeField(auto_now_add=True)
     book = models.ForeignKey(Book, on_delete=models.CASCADE, related_name="comments")
+    # tmp_book = models.ForeignKey(
+    #     TMPBook, on_delete=models.CASCADE, related_name='comments', null=True)
     author = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
     users_like = models.ManyToManyField(
         User,

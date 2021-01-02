@@ -26,5 +26,15 @@
     </a>
 {% endfor %}
 
+{% if user.is_authenticated %}
+  <form method="post" action="{% url 'add-comment' book_id=book.id %}">
+    {% csrf_token %}
+      {{ form }}
+    <button type="submit">Добавить Комментарий</button>
+  </form>
+{% else %}
+  <p><a href="{% url 'login' %}">Login</a> to comment</p>
+{% endif %}
+
 {% endblock %}
 

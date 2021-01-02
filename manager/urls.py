@@ -1,6 +1,6 @@
 from django.urls import path
 from manager.views import hello, MyPage, AddLike2Comment, AddRate2Book, BookDetail, AddBook
-from manager.views import LoginView, logout_user
+from manager.views import LoginView, logout_user, AddCommentToBook
 
 
 urlpatterns = [
@@ -15,5 +15,6 @@ urlpatterns = [
     path("add_book/", AddBook.as_view(), name="add-book"),
     path("login/", LoginView.as_view(), name="login"),
     path("logout/", logout_user, name="logout"),
+    path('add_comment/<int:book_id>/', AddCommentToBook.as_view(), name='add-comment'),
     path("", MyPage.as_view(), name="the-main-page"),
 ]

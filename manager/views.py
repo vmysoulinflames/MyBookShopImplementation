@@ -2,10 +2,8 @@ from django.contrib.auth import login, logout
 from django.db.models import Count, Prefetch, Avg
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
-from django.urls import reverse
 from django.views import View
-from django.contrib.auth.forms import AuthenticationForm
-from manager.forms import BookForm, CustomAuthenticationForm
+from manager.forms import BookForm, CustomAuthenticationForm, CommentForm
 from manager.models import Book, Comment, LikeCommentUser
 from manager.models import LikeBookUser as RateBookUser
 
@@ -65,7 +63,7 @@ class BookDetail(View):
         comment_query = Comment.objects.annotate(count_like=Count("users_like")).select_related("author")
         comments = Prefetch("comments", comment_query)
         book = Book.objects.prefetch_related("authors", comments).get(slug=slug)
-        return render(request, "book_detail.html", {"book": book, "rate": 2})
+        return render(request, "book_detail.html", {"book": book, "rate": 2, 'form': CommentForm()})
 
 
 class AddBook(View):
@@ -76,3 +74,12 @@ class AddBook(View):
             book.authors.add(request.user)
             book.save()
         return redirect("the-main-page")
+
+class AddCommentToBook(View):
+    def post(self, request, book_id):
+        if request.user.is_authenticated:
+            cf = CommentForm(request.POST)
+            comment = cf.save(commit=False)
+            comment.book_id = book_id
+            comment.save()
+        return redirect('book-detail', slug=Book.objects.get(id=book_id).slug)
